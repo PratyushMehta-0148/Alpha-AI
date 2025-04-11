@@ -1,14 +1,19 @@
 {
   "name": "coindcx-frontend",
   "version": "1.0.0",
+  "homepage": "https://parth-jatav.github.io/Alpha-Ai-Trading-Plateform",
   "dependencies": {
     "axios": "^1.8.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "^5.0.1"
+    
   },
   "scripts": {
-    "start": "react-scripts start"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "browserslist": {
     "production": [
