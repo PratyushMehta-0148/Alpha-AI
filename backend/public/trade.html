@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CoinDCX Trading Platform</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      padding: 50px;
+      text-align: center;
+    }
+    h1, h2 {
+      color: #222;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      display: inline-block;
+      text-align: left;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #2c7be5;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1a5cd8;
+    }
+    .message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>CoinDCX Trading Platform</h1>
+  <div class="container">
+    <h2>CoinDCX Trading Panel</h2>
+    <form id="tradeForm">
+      <label>Market Pair:</label>
+      <input type="text" id="market" value="BTCINR" required />
+
+      <label>Quantity:</label>
+      <input type="number" id="quantity" value="1" step="any" required />
+
+      <label>Side:</label>
+      <select id="side">
+        <option value="buy">Buy</option>
+        <option value="sell">Sell</option>
+      </select>
+
+      <label>Order Type:</label>
+      <select id="order_type">
+        <option value="market">Market</option>
+        <option value="limit">Limit</option>
+      </select>
+
+      <button type="submit">Execute Trade</button>
+    </form>
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("tradeForm");
+    const messageDiv = document.getElementById("message");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      messageDiv.textContent = "Placing order...";
+
+      const tradeData = {
+        market: document.getElementById("market").value.trim(),
+        quantity: parseFloat(document.getElementById("quantity").value),
+        side: document.getElementById("side").value,
+        order_type: document.getElementById("order_type").value,
+      };
+
+      try {
+        const res = await fetch("/place-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(tradeData)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          messageDiv.textContent = "✅ Trade placed successfully!";
+        } else {
+          messageDiv.textContent = `❌ Trade failed: ${data?.error?.message || data.message}`;
+        }
+      } catch (err) {
+        messageDiv.textContent = "❌ Network error occurred!";
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
