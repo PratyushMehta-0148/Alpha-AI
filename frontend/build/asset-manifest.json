@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.js": "/Alpha-Ai-Trading-Plateform/static/js/main.58673902.js",
-    "index.html": "/Alpha-Ai-Trading-Plateform/index.html",
-    "main.58673902.js.map": "/Alpha-Ai-Trading-Plateform/static/js/main.58673902.js.map"
+    "main.js": "./static/js/main.58673902.js",
+    "index.html": "./index.html",
+    "main.58673902.js.map": "./static/js/main.58673902.js.map"
   },
   "entrypoints": [
     "static/js/main.58673902.js"
