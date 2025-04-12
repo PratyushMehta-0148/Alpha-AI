@@ -11,10 +11,8 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Serve static files like trade.html, CSS, JS, images
-app.use(express.static(path.join(__dirname, "public")));
-
-const baseURL = "https://api.coindcx.com";
+// Serve React static files
+app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 // Util function to generate headers
 function getAuthHeaders(payload) {
@@ -31,7 +29,7 @@ function getAuthHeaders(payload) {
   };
 }
 
-// Route to handle placing an order
+// Order route
 app.post("/place-order", async (req, res) => {
   try {
     const { market, side, order_type, quantity } = req.body;
@@ -51,29 +49,31 @@ app.post("/place-order", async (req, res) => {
     const headers = getAuthHeaders(payload);
 
     const result = await axios.post(
-      `${baseURL}/exchange/v1/orders/create`,
+      `https://api.coindcx.com/exchange/v1/orders/create`,
       payload,
       { headers }
     );
 
     res.json(result.data);
-  } catch (err) {
-    console.error("❌ Error placing order:", err.message || err);
+  }  catch (err) {
+    console.error("Trade error details:", err.response?.data || err.message);
+
     if (err.response) {
-      res
-        .status(err.response.status)
-        .json({ message: "Trade failed", error: err.response.data });
+      res.status(err.response.status).json({
+        message: "Trade failed",
+        error: err.response.data,
+      });
     } else {
       res.status(500).json({ message: "Network Error", error: err.message });
     }
   }
 });
 
-// Default route: Serve the trade.html page
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "trade.html"));
+// Serve React app for all other routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
